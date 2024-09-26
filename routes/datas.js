@@ -9,7 +9,7 @@ let userInfo={
     exp:1069,
     fans:0,
     post:0,
-    restTime:365,
+    restTime:36000000000000,
 }
 
 
