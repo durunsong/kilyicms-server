@@ -47,11 +47,11 @@ const datas_user = {
 };
 
 router.post('/', function (req, res, next) {
-  if (req.body.name == "admin" && req.body.password == "123456") {
+  if (req.body.userName == "admin" && req.body.password == "123456") {
     res.status(200).json({
       ...datas_admin
     });
-  } else if (req.body.name == "user" && req.body.password == "123456") {
+  } else if (req.body.userName == "user" && req.body.password == "123456") {
     res.status(200).json({
       ...datas_user
     });
