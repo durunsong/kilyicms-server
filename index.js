@@ -3,23 +3,29 @@ const express = require('express')
 const path = require('path')
 const cors = require('cors')
 const app = express()
-const PORT = 4000
+const PORT = process.env.PORT || 4000
+app.use(express.json());
 app.use(
     cors({
-        origin: ["https://kilyicms-server.vercel.app", "https://kilyicms.vercel.app", "https://vercel.com", "http://localhost:7000", "http://localhost:4000"],
-        methods: ["GET", "POST", "PUT", "DELETE"],
+        origin: '*', // 或者指定允许的源
+        methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     })
 );
+app.options('*', (req, res) => {
+    res.sendStatus(200); // 处理预检请求
+});
 app.set('views', path.join(__dirname, 'views'))
 app.set('view engine', 'pug')
 
 const homeRouter = require('./routes/home')
 const loginRouter = require('./routes/login')
 const echoRouter = require('./routes/echo')
+const datasRouter = require('./routes/datas')
 
 app.use('/', homeRouter)
 app.use('/api/users/login', loginRouter)
 app.use('/echo', echoRouter)
+app.use('/datas', datasRouter)
 
 app.use(function (req, res, next) {
     next(createError(404))
