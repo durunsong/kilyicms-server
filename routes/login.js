@@ -30,7 +30,7 @@ const datas_user = {
   "userInfo": {
     "userName": "admin",
     "account": "testuser",
-    "avatar": "https://t11.baidu.com/it/u=4070862290,220377769&fm=30&app=106&f=JPEG?w=640&h=930&s=F9A1B15176236F15308C61DE03007032",
+    "avatar": "https://img0.baidu.com/it/u=826468538,1526483732&fm=253&fmt=auto&app=120&f=JPEG?w=500&h=500",
     "description": "sdfgvdbfg",
     "create_time": "2024-08-15T16:37:57.000Z",
     "update_time": "2024-08-15T16:37:57.000Z",
