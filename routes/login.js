@@ -56,7 +56,7 @@ router.post('/', function (req, res, next) {
       ...datas_user
     });
   } else {
-    res.status(200).json({
+    res.status(401).json({
       "message": "登录失败",
       "status": 401,
       "data": {
