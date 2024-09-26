@@ -1,0 +1,22 @@
+{
+  "dependencies": {
+    "@vercel/node": "^3.2.16",
+    "cors": "^2.8.5",
+    "ejs": "^3.1.10",
+    "express": "^4.21.0",
+    "http-errors": "^2.0.0",
+    "pug": "^3.0.3",
+    "uglify-js": "^3.19.3"
+  },
+  "name": "expressjs-project",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}
