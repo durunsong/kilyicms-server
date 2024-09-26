@@ -15,7 +15,9 @@ let userInfo={
 
 router.post('/', (req, res) => {
     if (req.body.name == "admin") {
-        res.send(userInfo);
+        res.status(200).json({
+            ...userInfo
+          });
     } else {
         res.send('用户名错误')
     }
