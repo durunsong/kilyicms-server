@@ -6,7 +6,7 @@ const app = express()
 const PORT = 4000
 app.use(
     cors({
-        origin: ["https://kilyicms-server.vercel.app", "https://vercel.app", "https://vercel.com", "http://localhost:7000", "http://localhost:4000"],
+        origin: ["https://kilyicms-server.vercel.app", "https://kilyicms.vercel.app", "https://vercel.com", "http://localhost:7000", "http://localhost:4000"],
         methods: ["GET", "POST", "PUT", "DELETE"],
     })
 );
