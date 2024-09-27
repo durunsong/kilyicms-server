@@ -45,7 +45,7 @@ const datas_user = {
 };
 
 router.post("/", function (req, res, next) {
-  const currentTime = moment().format("YYYY-MM-DD HH:mm:ss");
+  const currentTime= moment().add(8, 'hours').format("YYYY-MM-DD HH:mm:ss");
   // 创建 JWT
   const createToken = (userName) => {
     const payload = {
@@ -79,9 +79,9 @@ router.post("/", function (req, res, next) {
       },
     });
   } else {
-    res.status(401).json({
+    res.status(403).json({
       message: "登录失败",
-      status: 401,
+      status: 403,
       data: {
         msg: "用户名或密码错误",
       },
