@@ -52,7 +52,7 @@ router.post("/", function (req, res, next) {
       userId: 41, // 模拟的用户 ID
       userName: userName, // 用户名
       iat: Math.floor(Date.now() / 1000), // 签发时间
-      exp: Math.floor(Date.now() / 1000) + + (60 * 60 * 24 * 3), // 3天后过期
+      exp: Math.floor(Date.now() / 1000) + (60 * 60 * 24 * 3), // 3天后过期
     };
     return jwt.sign(payload, secretKey); // 签发 token
   };
