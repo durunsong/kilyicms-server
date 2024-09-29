@@ -37,7 +37,6 @@ const datas_user = {
     create_time: "2024-08-17T16:37:57.000Z",
     update_time: "2024-08-17T16:37:57.000Z",
     is_delete: 0,
-    token: "",
     nick_name: "普通用户",
     role_ids: [301, 402, 509],
     login_time: "",
@@ -64,7 +63,6 @@ router.post("/", function (req, res, next) {
       userInfo: {
         ...datas_admin.userInfo,
         login_time: currentTime,
-        token: token
       },
     });
   } else if (req.body.userName == "user" && req.body.password == "123456") {
@@ -75,7 +73,6 @@ router.post("/", function (req, res, next) {
       userInfo: {
         ...datas_admin.userInfo,
         login_time: currentTime,
-        token: token
       },
     });
   } else {
