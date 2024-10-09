@@ -19,7 +19,7 @@ router.get('/', function (req, res) {
           background-color: #f4f4f9;
         }
         h1 {
-          font-size: 4rem;
+          font-size: 3rem;
           font-weight: bold;
           background: linear-gradient(45deg, #ff416c, #ff4b2b, #f0c27b, #4b1248);
           -webkit-background-clip: text;
@@ -35,7 +35,7 @@ router.get('/', function (req, res) {
       </style>
     </head>
     <body>
-      <h1>Welcome to the world of kilyicms!</h1>
+      <h1>Welcome to the world of kilyicms API!</h1>
     </body>
     </html>
   `);

@@ -24,7 +24,7 @@ const datasRouter = require('./routes/datas')
 const userRouter = require('./routes/user')
 const userInfoRouter = require('./routes/userInfo')
 
-app.use('/api/users', homeRouter)
+app.use('/', homeRouter)
 app.use('/api/users/login', loginRouter)
 app.use('/echo', echoRouter)
 app.use('/datas', datasRouter)
