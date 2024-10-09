@@ -40,6 +40,7 @@ router.get("/", (req, res) => {
             nick_name: user.nick_name,
             role_ids: user.role_ids,
             id: user.id,
+            roles: user.roles,
         };
         res.status(200).json({
             message: "获取用户信息成功",

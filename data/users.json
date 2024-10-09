@@ -1,7 +1,7 @@
 {
   "admin": {
     "userName": "admin",
-    "account": "test_admin",
+    "account": "test-admin",
     "password": "123456",
     "avatar": "https://img1.baidu.com/it/u=1248484120,3563242407&fm=253&fmt=auto&app=138&f=JPEG?w=800&h=800",
     "description": "This is an admin account!",
@@ -14,11 +14,14 @@
       102,
       301
     ],
-    "id": 41
+    "id": 41,
+    "roles": [
+      "admin"
+    ]
   },
   "user": {
     "userName": "user",
-    "account": "test_user",
+    "account": "test-user",
     "password": "123456",
     "avatar": "https://img0.baidu.com/it/u=826468538,1526483732&fm=253&fmt=auto&app=120&f=JPEG?w=500&h=500",
     "description": "This is a user account!",
@@ -31,6 +34,9 @@
       402,
       509
     ],
-    "id": 42
+    "id": 42,
+    "roles": [
+      "user"
+    ]
   }
 }
