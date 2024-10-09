@@ -1,0 +1,36 @@
+{
+  "admin": {
+    "userName": "admin",
+    "account": "test_admin",
+    "password": "123456",
+    "avatar": "https://img1.baidu.com/it/u=1248484120,3563242407&fm=253&fmt=auto&app=138&f=JPEG?w=800&h=800",
+    "description": "This is an admin account!",
+    "create_time": "2024-08-15T16:37:57.000Z",
+    "update_time": "2024-08-15T16:37:57.000Z",
+    "is_delete": 0,
+    "nick_name": "管理员",
+    "role_ids": [
+      101,
+      102,
+      301
+    ],
+    "id": 41
+  },
+  "user": {
+    "userName": "user",
+    "account": "test_user",
+    "password": "123456",
+    "avatar": "https://img0.baidu.com/it/u=826468538,1526483732&fm=253&fmt=auto&app=120&f=JPEG?w=500&h=500",
+    "description": "This is a user account!",
+    "create_time": "2024-08-17T16:37:57.000Z",
+    "update_time": "2024-08-17T16:37:57.000Z",
+    "is_delete": 0,
+    "nick_name": "普通用户",
+    "role_ids": [
+      301,
+      402,
+      509
+    ],
+    "id": 42
+  }
+}

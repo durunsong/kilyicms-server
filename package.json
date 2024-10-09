@@ -4,9 +4,11 @@
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "express": "^4.21.0",
+    "fs": "0.0.1-security",
     "http-errors": "^2.0.0",
     "jsonwebtoken": "^9.0.2",
     "moment": "^2.30.1",
+    "path": "^0.12.7",
     "pug": "^3.0.3"
   },
   "name": "expressjs-project",

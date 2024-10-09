@@ -22,12 +22,14 @@ const loginRouter = require('./routes/login')
 const echoRouter = require('./routes/echo')
 const datasRouter = require('./routes/datas')
 const userRouter = require('./routes/user')
+const userInfoRouter = require('./routes/userInfo')
 
 app.use('/api/users', homeRouter)
 app.use('/api/users/login', loginRouter)
 app.use('/echo', echoRouter)
 app.use('/datas', datasRouter)
 app.use('/userData', userRouter)
+app.use('/api/users/userInfo', userInfoRouter)
 
 app.use(function (req, res, next) {
     next(createError(404))

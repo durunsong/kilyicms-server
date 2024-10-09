@@ -2,88 +2,52 @@ const express = require("express");
 const router = express.Router();
 const moment = require("moment");
 const jwt = require("jsonwebtoken");
+const fs = require("fs");
+const path = require("path");
 
 // 秘钥用于签发 token
 const secretKey = "kilyicms_secret_key";
-const datas_admin = {
-  message: "登录成功",
-  status: 200,
-  token: "",
-  userInfo: {
-    userName: "admin",
-    account: "test_admin",
-    avatar: "https://img1.baidu.com/it/u=1248484120,3563242407&fm=253&fmt=auto&app=138&f=JPEG?w=800&h=800",
-    description: "This is an admin account!",
-    create_time: "2024-08-15T16:37:57.000Z",
-    update_time: "2024-08-15T16:37:57.000Z",
-    is_delete: 0,
-    token: "",
-    nick_name: "管理员",
-    role_ids: [101, 102, 301],
-    login_time: "",
-  },
+
+// 读取 users.json 文件中的用户数据
+const getUsers = () => {
+  const data = fs.readFileSync(path.join(__dirname, "..", "data", "users.json"), "utf8");
+  return JSON.parse(data);
 };
 
-const datas_user = {
-  message: "登录成功",
-  status: 200,
-  token: "",
-  userInfo: {
-    userName: "user",
-    account: "test_user",
-    avatar:
-      "https://img0.baidu.com/it/u=826468538,1526483732&fm=253&fmt=auto&app=120&f=JPEG?w=500&h=500",
-    description: "This is a user account!",
-    create_time: "2024-08-17T16:37:57.000Z",
-    update_time: "2024-08-17T16:37:57.000Z",
-    is_delete: 0,
-    nick_name: "普通用户",
-    role_ids: [301, 402, 509],
-    login_time: "",
-  },
-};
-
-router.post("/", function (req, res, next) {
-  const currentTime= moment().add(8, 'hours').format("YYYY-MM-DD HH:mm:ss");
-  // 创建 JWT
-  const createToken = (userName) => {
-    const payload = {
-      userId: 41, // 模拟的用户 ID
-      userName: userName, // 用户名
-      iat: Math.floor(Date.now() / 1000), // 签发时间
-      exp: Math.floor(Date.now() / 1000) + (60 * 60 * 24 * 3), // 3天后过期
-    };
-    return jwt.sign(payload, secretKey); // 签发 token
+// 创建 JWT
+const createToken = (user) => {
+  const payload = {
+    userName: user.userName,
+    account: user.account,
   };
-  if (req.body.userName == "admin" && req.body.password == "123456") {
-    const token = createToken("admin");
-    res.status(200).json({
-      ...datas_admin,
-      token: token,
-      userInfo: {
-        ...datas_admin.userInfo,
-        login_time: currentTime,
-      },
-    });
-  } else if (req.body.userName == "user" && req.body.password == "123456") {
-    const token = createToken("user");
-    res.status(200).json({
-      ...datas_user,
-      token: token,
-      userInfo: {
-        ...datas_admin.userInfo,
-        login_time: currentTime,
-      },
-    });
-  } else {
-    res.status(403).json({
-      message: "登录失败",
-      status: 403,
-      data: {
-        msg: "用户名或密码错误",
-      },
-    });
+  return jwt.sign(payload, secretKey, { expiresIn: "1h" }); // 签发 token
+};
+
+// 登录接口
+router.post("/", (req, res) => {
+  const { userName, password } = req.body;
+
+  if (!userName || !password) {
+    return res.status(400).json({ message: "账号和密码都是必需的" });
   }
+
+  const users = getUsers(); // 获取用户数据
+  const user = users[userName];
+
+  if (!user || user.password !== password) {
+    return res.status(401).json({ message: "用户名或密码错误" });
+  }
+
+  // 生成 token
+  const token = createToken(user);
+  const login_time = moment().format("YYYY-MM-DD HH:mm:ss");
+
+  res.status(200).json({
+    message: "登录成功",
+    status: 200,
+    token,
+    login_time,
+  });
 });
 
 module.exports = router;
