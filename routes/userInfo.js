@@ -49,7 +49,7 @@ router.get("/", (req, res) => {
         });
     } catch (err) {
         console.error(err);
-        return res.status(403).json({ message: "无效的 token" });
+        return res.status(403).json({ message: "登录过期，请重新登录" });
     }
 });
 
