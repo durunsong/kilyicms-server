@@ -41,27 +41,22 @@ router.post("/", (req, res) => {
     return res.status(404).json({ message: "用户不存在或已被删除" });
   }
 
-  // 验证密码，使用 bcrypt 进行加密密码的对比
-  bcrypt.compare(password, user.password, (err, isMatch) => {
-    if (err) {
-      return res.status(500).json({ message: "密码验证失败", error: err });
-    }
+  // 暂时直接使用明文密码比较
+  if (password !== user.password) {
+    return res.status(401).json({ message: "用户名或密码错误" });
+  }
 
-    if (!isMatch) {
-      return res.status(401).json({ message: "用户名或密码错误" });
-    }
+  // 生成 token
+  const token = createToken(user);
+  const login_time = moment().format("YYYY-MM-DD HH:mm:ss");
 
-    // 生成 token
-    const token = createToken(user);
-    const login_time = moment().format("YYYY-MM-DD HH:mm:ss");
-
-    res.status(200).json({
-      message: "登录成功",
-      status: 200,
-      token,
-      login_time,
-    });
+  res.status(200).json({
+    message: "登录成功",
+    status: 200,
+    token,
+    login_time,
   });
 });
+
 
 module.exports = router;
