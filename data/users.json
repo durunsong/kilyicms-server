@@ -38,5 +38,43 @@
     "roles": [
       "user"
     ]
+  },
+  "admin123": {
+    "uuid": "e7753d3e-b6ec-4967-b6ac-d7d2fdef7530",
+    "account": "testuser",
+    "create_time": "2024-10-22 04:13:17",
+    "is_delete": 0,
+    "password": "$2b$10$8dDCjDOJzNgHNqP2ZxHi/.bYsJUdMIiWeHnEsiwGyREk9s2ynolZ2",
+    "update_time": "2024-10-22 04:13:17",
+    "description": "鄂大GV李二急急急急急急哦为IPO比尔阿伯i啊额阿萨德GV哦i哈额日环比阿和哦i忽然VB哦i啊呃呃我i还把我i啊好吧vow额A和Bv哦i阿瓦好热",
+    "userName": "admin123",
+    "nick_name": "管理员",
+    "role_ids": [
+      101,
+      102,
+      301
+    ],
+    "avatar": "https://img1.baidu.com/it/u=1248484120,3563242407&fm=253&fmt=auto&app=138&f=JPEG?w=800&h=800",
+    "roles": [
+      "admin"
+    ]
+  },
+  "admin000": {
+    "uuid": "16a71f66-d1a5-48e6-986c-58b613e617c9",
+    "account": "admin000",
+    "create_time": "2024-10-21 20:40:20",
+    "is_delete": 0,
+    "password": "$2b$10$rTz3VbpbKkDl6weUnlCkCe19S7sq/VdlxcoBc6uEzhUwD2YHSHocS",
+    "update_time": "2024-10-21 20:40:20",
+    "description": "",
+    "userName": "admin000",
+    "nick_name": "新用户",
+    "role_ids": [
+      201
+    ],
+    "avatar": "https://img1.baidu.com/it/u=1248484120,3563242407&fm=253&fmt=auto&app=138&f=JPEG?w=800&h=800",
+    "roles": [
+      "admin"
+    ]
   }
 }

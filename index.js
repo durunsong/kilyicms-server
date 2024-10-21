@@ -2,9 +2,12 @@ const createError = require('http-errors')
 const express = require('express')
 const path = require('path')
 const cors = require('cors')
+const bodyParser = require('body-parser');
 const app = express()
 const PORT = process.env.PORT || 4000
+
 app.use(express.json());
+app.use(bodyParser.json());
 app.use(
     cors({
         origin: '*', // 或者指定允许的源
@@ -23,6 +26,8 @@ const echoRouter = require('./routes/echo')
 const datasRouter = require('./routes/datas')
 const userRouter = require('./routes/user')
 const userInfoRouter = require('./routes/userInfo')
+const userDataRouter = require('./routes/userList')
+const userRegisterRouter = require('./routes/registerUser')
 
 app.use('/', homeRouter)
 app.use('/api/users/login', loginRouter)
@@ -30,15 +35,18 @@ app.use('/echo', echoRouter)
 app.use('/datas', datasRouter)
 app.use('/userData', userRouter)
 app.use('/api/users/userInfo', userInfoRouter)
+app.use('/api/users', userDataRouter)
+app.use('/api/users/register', userRegisterRouter)
 
+// 404 错误处理
 app.use(function (req, res, next) {
     next(createError(404))
 })
 
+// 错误处理
 app.use(function (err, req, res, next) {
     res.locals.message = err.message
     res.locals.error = req.app.get('env') === 'development' ? err : {}
-
     res.status(err.status || 500)
     res.render('error')
 })
