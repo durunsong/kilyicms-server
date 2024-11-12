@@ -3,8 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www",
-    "vercel-build": "echo 'Build step not needed'"
+    "start": "node index"
   },
   "dependencies": {
     "@neondatabase/serverless": "^0.10.3",

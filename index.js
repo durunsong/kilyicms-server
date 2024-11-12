@@ -1,30 +1,24 @@
-#!/usr/bin/env node
-
 /**
- * Module dependencies.
+ * 引入模块依赖
  */
-
-const app = require('../app');
+const app = require('./bin/app');
 const debug = require('debug')('kilyicms-db:server');
 const http = require('http');
 
 /**
- * Get port from environment and store in Express.
+ * 从环境变量中获取端口号，如果未定义则使用默认端口 4500
  */
-
 const port = normalizePort(process.env.PORT || '4500');
 app.set('port', port);
 
 /**
- * Create HTTP server.
+ * 创建 HTTP 服务器
  */
-
 const server = http.createServer(app);
 
 /**
- * Listen on provided port, on all network interfaces.
+ * 监听指定端口，启动服务器
  */
-
 server.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
@@ -32,39 +26,36 @@ server.on('error', onError);
 server.on('listening', onListening);
 
 /**
- * Normalize a port into a number, string, or false.
+ * 将端口规范化为数字、字符串或 false
+ * @param {string|number} val - 输入的端口值
+ * @returns {number|string|boolean} - 规范化后的端口
  */
-
 function normalizePort(val) {
   const port = parseInt(val, 10);
-
+  // 检查是否为有效端口号
   if (isNaN(port)) {
-    // named pipe
+    // 不是数字则返回原始字符串（如命名管道）
     return val;
   }
-
   if (port >= 0) {
-    // port number
+    // 有效端口号
     return port;
   }
-
-  return false;
+  return false; // 无效端口
 }
 
 /**
- * Event listener for HTTP server "error" event.
+ * 处理服务器启动过程中的错误
+ * @param {Error} error - 错误对象
  */
-
 function onError(error) {
   if (error.syscall !== 'listen') {
     throw error;
   }
-
   const bind = typeof port === 'string'
     ? 'Pipe ' + port
     : 'Port ' + port;
-
-  // handle specific listen errors with friendly messages
+  // 用友好信息处理特定的监听错误
   switch (error.code) {
     case 'EACCES':
       console.error(bind + ' requires elevated privileges');
@@ -80,9 +71,8 @@ function onError(error) {
 }
 
 /**
- * Event listener for HTTP server "listening" event.
+ *  HTTP 服务器 “监听 ”事件的事件监听器。
  */
-
 function onListening() {
   const addr = server.address();
   const bind = typeof addr === 'string'
@@ -94,5 +84,5 @@ function onListening() {
 
 /**
  * @vercel部署需要这样写
- * */ 
+  */
 module.exports = app; 

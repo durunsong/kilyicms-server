@@ -7,9 +7,9 @@ const logger = require('morgan');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 
-const indexRouter = require('./routes/index');
-const usersRouter = require('./routes/users');
-const dbVersionRouter = require('./routes/db-version');
+const indexRouter = require('../routes/index');
+const usersRouter = require('../routes/users');
+const dbVersionRouter = require('../routes/db-version');
 
 const app = express();
 
@@ -25,10 +25,10 @@ app.options('*', (req, res) => {
 });
 
 // 设置静态资源目录
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, '../public')));
 
 // 设置视图引擎
-app.set('views', path.join(__dirname, 'views'));
+app.set('views', path.join(__dirname, '../views'));
 app.set('view engine', 'ejs');
 
 app.use(logger('dev')); // 使用日志中间件
