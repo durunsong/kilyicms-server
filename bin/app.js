@@ -10,6 +10,9 @@ const bodyParser = require('body-parser');
 const indexRouter = require('../routes/index');
 const usersRouter = require('../routes/users');
 const dbVersionRouter = require('../routes/db-version');
+const loginRouter = require('../routes/login');
+const registerRouter = require('../routes/register');
+const userInfoRouter = require('../routes/userInfo');
 
 const app = express();
 
@@ -39,8 +42,11 @@ app.use(express.static(path.join(__dirname, 'public'))); // 提供静态文件
 
 // 配置路由
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
-app.use('/db-version', dbVersionRouter); // 数据库版本路由
+app.use('/api/users', usersRouter);
+app.use('/users/db-version', dbVersionRouter); // 数据库版本路由
+app.use('/api/users/login', loginRouter); // 数据库版本路由
+app.use('/api/users/register', registerRouter); // 数据库版本路由
+app.use('/api/users/userInfo', userInfoRouter); // 数据库版本路由
 
 // 处理 404 错误
 app.use(function (req, res, next) {
