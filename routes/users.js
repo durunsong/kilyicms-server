@@ -18,9 +18,9 @@ const authMiddleware = (req, res, next) => {
 
 // 1. 新增用户
 router.post('/', async (req, res) => {
-  const { userName, password, description, roles } = req.body;
+  const { user_name, password, description, roles } = req.body;
   // 检查必填字段
-  if (!userName || !password || !description || !roles) {
+  if (!user_name || !password || !description || !roles) {
     return res.status(400).json({ message: 'Missing required fields' });
   }
   try {
@@ -40,7 +40,7 @@ router.post('/', async (req, res) => {
       RETURNING *;
     `;
     const values = [
-      uuid, userName, hashedPassword, description, JSON.stringify(roles),
+      uuid, user_name, hashedPassword, description, JSON.stringify(roles),
       account, create_time, update_time, is_delete, nick_name,
       JSON.stringify(role_ids), avatar
     ];
@@ -106,7 +106,7 @@ router.get('/', async (req, res) => {
     res.json({
       status: 200,
       message: 'Query User Success',
-      data: result,
+      data: data,
       page: pageNum,
       pageSize: pageSize,
       total: total
@@ -122,8 +122,8 @@ router.get('/', async (req, res) => {
 
 // 3. 更新用户
 router.put('/', async (req, res) => {
-  const { id, userName, password, description, roles } = req.body;
-  if (!id || !userName || !password || !description || !roles) {
+  const { id, user_name, password, description, roles } = req.body;
+  if (!id || !user_name || !password || !description || !roles) {
     return res.status(400).json({ message: 'Missing required fields' });
   }
   try {
@@ -140,7 +140,7 @@ router.put('/', async (req, res) => {
       role_ids = $9, avatar = $10 WHERE id = $11 RETURNING *;
     `;
     const values = [
-      userName, hashedPassword, description, JSON.stringify(roles),
+      user_name, hashedPassword, description, JSON.stringify(roles),
       update_time, account, is_delete, nick_name,
       JSON.stringify(role_ids), avatar, id
     ];

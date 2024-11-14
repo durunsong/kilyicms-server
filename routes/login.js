@@ -8,9 +8,9 @@ const secretKey = process.env.JWT_SECRET; // 从环境变量中获取密钥
 
 // 登录接口
 router.post('/', async (req, res) => {
-    const { userName, password } = req.body;
+    const { user_name, password } = req.body;
     // 校验必填字段
-    if (!userName || !password) {
+    if (!user_name || !password) {
         return res.status(400).json({ status: 400, message: "账号和密码都是必需的" });
     }
     try {
@@ -18,7 +18,7 @@ router.post('/', async (req, res) => {
         const result = await sql`
       SELECT * 
       FROM users 
-      WHERE user_name = ${userName} AND is_delete = 0
+      WHERE user_name = ${user_name} AND is_delete = 0
     `;
         if (result.length === 0) {
             return res.status(404).json({ status: 404, message: "用户不存在" });
@@ -32,7 +32,7 @@ router.post('/', async (req, res) => {
         }
         // 生成 JWT Token
         const token = jwt.sign(
-            { id: user.id, userName: user.user_name },
+            { id: user.id, user_name: user.user_name },
             secretKey, // 替换为您的 JWT 秘钥
             { expiresIn: "1h" }
         );

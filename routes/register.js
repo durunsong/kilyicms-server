@@ -6,9 +6,9 @@ const { hashPassword, formatDate } = require('../utils/utils');
 
 // 注册接口
 router.post('/', async (req, res) => {
-  const { userName, password, confirmPassword, roles } = req.body;
+  const { user_name, password, confirmPassword, roles } = req.body;
   // 校验必填字段
-  if (!userName || !password || !confirmPassword || !roles) {
+  if (!user_name || !password || !confirmPassword || !roles) {
     return res.status(400).json({ message: '用户名、密码、确认密码和角色是必填项' });
   }
   // 检查密码是否匹配
@@ -20,7 +20,7 @@ router.post('/', async (req, res) => {
     const checkUserQuery = `
       SELECT * FROM users WHERE user_name = $1 AND is_delete = 0;
     `;
-    const existingUser = await sql(checkUserQuery, [userName]);
+    const existingUser = await sql(checkUserQuery, [user_name]);
     if (existingUser.length > 0) {
       return res.status(409).json({ status: 409, message: '用户名已存在,请换一个用户名再试' });
     }
@@ -42,15 +42,15 @@ router.post('/', async (req, res) => {
       RETURNING *;
     `;
     const values = [
-      uuid, userName, hashedPassword, '', JSON.stringify(roles),
-      userName, create_time, update_time, is_delete, nick_name, JSON.stringify(role_ids), avatar
+      uuid, user_name, hashedPassword, '', JSON.stringify(roles),
+      user_name, create_time, update_time, is_delete, nick_name, JSON.stringify(role_ids), avatar
     ];
     const result = await sql(insertUserQuery, values);
     if (result.length === 0) {
       return res.status(500).json({ message: '用户注册失败，数据库插入失败' });
     }
     // 返回注册成功的用户数据
-    res.status(201).json({ message: '用户注册成功', status: 201, data: result[0] });
+    res.status(200).json({ message: '用户注册成功', status: 200, data: result[0] });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: '注册失败', error: error.message });

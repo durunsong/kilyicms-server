@@ -15,8 +15,8 @@ router.get("/", async (req, res) => {
     }
     try {
         const decoded = jwt.verify(token, secretKey);
-        const userName = decoded.userName;
-        if (!userName) {
+        const user_name = decoded.user_name;
+        if (!user_name) {
             return res.status(403).json({ status: 'error', message: 'Token 无效或用户信息缺失' });
         }
         // 查询数据库获取用户信息
@@ -27,7 +27,7 @@ router.get("/", async (req, res) => {
             FROM users
             WHERE user_name = $1 AND is_delete = 0
         `;
-        const result = await sql(query, [userName]);
+        const result = await sql(query, [user_name]);
         // 判断返回的数据结构是否正确
         if (!result || result.length === 0) {
             return res.status(404).json({
@@ -38,7 +38,7 @@ router.get("/", async (req, res) => {
         const user = Array.isArray(result) ? result[0] : result.rows[0];
         // 返回用户信息
         const userInfo = {
-            userName: user.user_name,
+            user_name: user.user_name,
             account: user.account,
             avatar: user.avatar,
             description: user.description,

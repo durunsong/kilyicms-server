@@ -1,18 +1,12 @@
 // 跨域cors中间件
-const cors = require('cors');
+const cors = require("cors");
 
-const whitelist = process.env.CORS_WHITELIST?.split(',') || ['*'];
-const corsOptions = {
-    origin: (origin, callback) => {
-        if (whitelist.includes('*') || whitelist.includes(origin)) {
-            callback(null, true);
-        } else {
-            callback(new Error('Not allowed by CORS'));
-        }
-    },
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-    credentials: true,
-};
+const corsMiddleware = cors(
+    {
+        origin: '*', // 或者指定允许的源
+        methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+        credentials: true,
+    }
+); // 直接返回中间件函数
 
-module.exports = cors(corsOptions);
+module.exports = corsMiddleware;

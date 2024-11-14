@@ -1,20 +1,17 @@
 const express = require('express');
-const cookieParser = require('cookie-parser');
-const logger = require('morgan');
 const corsMiddleware = require('./corsMiddleware');
+const cookieParser = require('cookie-parser');
+const morgan = require('morgan');
 
 module.exports = (app) => {
-    // 日志中间件
-    app.use(logger('dev'));
+    // 使用 CORS 中间件
+    app.use(corsMiddleware);
 
-    // 解析 JSON 和 URL 编码请求体
+    // 使用内置的 JSON 和 URL 解析中间件
     app.use(express.json());
     app.use(express.urlencoded({ extended: true }));
 
-    // 解析 Cookies
-    app.use(cookieParser());
-
-    // CORS 中间件
-    app.use(corsMiddleware);
-    app.options('*', (req, res) => res.sendStatus(200));
+    // 其他中间件
+    app.use(morgan('dev')); // 日志中间件
+    app.use(cookieParser()); // 解析 Cookies
 };
