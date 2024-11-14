@@ -4,18 +4,6 @@ const { sql } = require('../db/db-connection');
 const { hashPassword, verifyToken, formatDate } = require('../utils/utils');
 const { v4: uuidv4 } = require('uuid');
 
-// 中间件：验证 Token
-const authMiddleware = (req, res, next) => {
-  const token = req.headers['authorization'];
-  if (!token) return res.status(401).send('Unauthorized');
-
-  const decoded = verifyToken(token);
-  if (!decoded) return res.status(401).send('Invalid token');
-
-  req.user = decoded;
-  next();
-};
-
 // 1. 新增用户
 router.post('/', async (req, res) => {
   const { user_name, password, description, roles } = req.body;
@@ -58,7 +46,6 @@ router.post('/', async (req, res) => {
 });
 
 // 2. 查询用户
-// router.get('/', authMiddleware, async (req, res) => {
 router.get('/', async (req, res) => {
   const { pageNum = 1, pageSize = 10, keywords = '', startTime, endTime } = req.query;
   const offset = (pageNum - 1) * pageSize;
