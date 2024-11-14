@@ -43,13 +43,9 @@ router.post('/', async (req, res) => {
     // 插入新用户数据
     const insertUserQuery = `
       INSERT INTO users (uuid, user_name, password, description, roles, account, create_time, update_time, is_delete, nick_name, role_ids, avatar)
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
-      RETURNING *;
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) RETURNING *;
     `;
-    const values = [
-      uuid, user_name, hashedPassword, '', JSON.stringify(roles),
-      user_name, create_time, update_time, is_delete, nick_name, JSON.stringify(role_ids), avatar
-    ];
+    const values = [uuid, user_name, hashedPassword, '', JSON.stringify(roles), user_name, create_time, update_time, is_delete, nick_name, JSON.stringify(role_ids), avatar];
     const result = await sql(insertUserQuery, values);
     if (result.length === 0) {
       return res.status(500).json({ message: '用户注册失败，数据库插入失败' });

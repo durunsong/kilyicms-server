@@ -229,10 +229,11 @@ router.delete('/:id', authMiddleware, async (req, res) => {
   const { id } = req.params;
   const currentUserId = req.user.id;
   const currentUserName = req.user.user_name;
+  console.log("99999++++++++++", currentUserName);
   if (id == currentUserId) {
-    return res.status(409).json({ status: 409, message: '不能删除当前登录的账号！' });
+    return res.status(409).json({ status: 409, message: '不能删除当前登录的账号！！！' });
   }
-  if (currentUserName == 'admin' || 'user') {
+  if (currentUserName === 'admin' || currentUserName === 'user') {
     return res.status(409).json({ status: 409, message: '不能删除演示账号！！！' });
   }
   try {

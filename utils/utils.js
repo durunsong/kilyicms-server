@@ -11,8 +11,10 @@ const JWT_SECRET = process.env.JWT_SECRET || '64305b2c17dc4d94f3e54cbd12b05696';
  * @returns {Promise<string>} - 返回加密后的密码
  */
 const hashPassword = async (password) => {
-  return await bcrypt.hash(password, SALT_ROUNDS);
+  const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
+  return hashedPassword;
 };
+
 
 /**
  * 校验密码是否正确
