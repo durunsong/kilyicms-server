@@ -9,10 +9,10 @@ const app = express();
 require('../middleware/index')(app);
 
 // 设置静态资源目录
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, '../public')));
 
 // 设置视图引擎
-app.set('views', path.join(__dirname, 'views'));
+app.set('views', path.join(__dirname, '../views'));
 app.set('view engine', 'ejs');
 
 // 加载路由
