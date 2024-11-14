@@ -2,62 +2,32 @@ require('dotenv').config();
 const createError = require('http-errors');
 const express = require('express');
 const path = require('path');
-const cookieParser = require('cookie-parser');
-const logger = require('morgan');
-const cors = require('cors');
-const bodyParser = require('body-parser');
-
-const indexRouter = require('../routes/index');
-const usersRouter = require('../routes/users');
-const dbVersionRouter = require('../routes/db-version');
-const loginRouter = require('../routes/login');
-const registerRouter = require('../routes/register');
-const userInfoRouter = require('../routes/userInfo');
 
 const app = express();
 
-app.use(bodyParser.json());
-app.use(
-    cors({
-        origin: '*', // 或者指定允许的源
-        methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    })
-);
-app.options('*', (req, res) => {
-    res.sendStatus(200); // 处理预检请求
-});
+// 加载中间件
+require('../middleware/index')(app);
 
 // 设置静态资源目录
-app.use(express.static(path.join(__dirname, '../public')));
+app.use(express.static(path.join(__dirname, 'public')));
 
 // 设置视图引擎
-app.set('views', path.join(__dirname, '../views'));
+app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
-app.use(logger('dev')); // 使用日志中间件
-app.use(express.json()); // 解析 JSON 格式请求体
-app.use(express.urlencoded({ extended: false })); // 解析 URL 编码请求体
-app.use(cookieParser()); // 解析 Cookies
-app.use(express.static(path.join(__dirname, 'public'))); // 提供静态文件
-
-// 配置路由
-app.use('/', indexRouter);
-app.use('/api/users', usersRouter);
-app.use('/users/db-version', dbVersionRouter); // 数据库版本路由
-app.use('/api/users/login', loginRouter); // 数据库版本路由
-app.use('/api/users/register', registerRouter); // 数据库版本路由
-app.use('/api/users/userInfo', userInfoRouter); // 数据库版本路由
+// 加载路由
+require('../routes/index')(app);
 
 // 处理 404 错误
-app.use(function (req, res, next) {
-  next(createError(404));
+app.use((req, res, next) => {
+    next(createError(404));
 });
 
 // 错误处理
-app.use(function (err, req, res, next) {
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
-  res.status(err.status || 500).render('error');
+app.use((err, req, res, next) => {
+    res.locals.message = err.message;
+    res.locals.error = req.app.get('env') === 'development' ? err : {};
+    res.status(err.status || 500).render('error');
 });
 
 module.exports = app;

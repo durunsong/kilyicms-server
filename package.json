@@ -9,7 +9,6 @@
     "@neondatabase/serverless": "^0.10.3",
     "@vercel/node": "^3.2.24",
     "bcrypt": "^5.1.1",
-    "body-parser": "^1.20.3",
     "cookie-parser": "~1.4.7",
     "cors": "^2.8.5",
     "debug": "~2.6.9",
