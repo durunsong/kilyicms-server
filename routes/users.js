@@ -1,11 +1,13 @@
 const express = require('express');
+const moment = require('moment');
 const router = express.Router();
 const { sql } = require('../db/db-connection');
-const { hashPassword, verifyToken, formatDate } = require('../utils/utils');
+const { hashPassword, formatDate } = require('../utils/utils');
 const { v4: uuidv4 } = require('uuid');
+const authMiddleware = require('../middleware/authMiddleware');
 
 // 1. 新增用户
-router.post('/', async (req, res) => {
+router.post('/', authMiddleware, async (req, res) => {
   const { user_name, password, description, roles } = req.body;
   // 检查必填字段
   if (!user_name || !password || !description || !roles) {
@@ -20,7 +22,12 @@ router.post('/', async (req, res) => {
     const is_delete = 0;
     const nick_name = '管理员';
     const role_ids = [101, 102, 301];
-    const avatar = 'https://img1.baidu.com/it/u=1248484120,3563242407&fm=253&fmt=auto&app=138&f=JPEG?w=800&h=800';
+    let avatar = '';
+    if (roles[0] == 'admin') {
+      avatar = 'https://img1.baidu.com/it/u=1248484120,3563242407&fm=253&fmt=auto&app=138&f=JPEG?w=800&h=800';
+    } else {
+      avatar = 'https://img0.baidu.com/it/u=826468538,1526483732&fm=253&fmt=auto&app=120&f=JPEG?w=500&h=500';
+    }
     // 插入用户数据
     const query = `
       INSERT INTO users (uuid, user_name, password, description, roles, account, create_time, update_time, is_delete, nick_name, role_ids, avatar)
@@ -47,107 +54,211 @@ router.post('/', async (req, res) => {
 
 // 2. 查询用户
 router.get('/', async (req, res) => {
-  const { pageNum = 1, pageSize = 10, keywords = '', startTime, endTime } = req.query;
-  const offset = (pageNum - 1) * pageSize;
+  const { pageNum = 1, pageSize = 10, keywords = '' } = req.query;
+  const page = Number(pageNum);
+  const size = Number(pageSize);
+  const startTime = req.query.startTime;
+  const endTime = req.query.endTime;
+  const offset = (page - 1) * size;
+
   try {
+    // 基础查询
     let query = `SELECT * FROM users WHERE is_delete = 0`;
+    let countQuery = `SELECT COUNT(*) FROM users WHERE is_delete = 0`;
     const params = [];
+    const countParams = [];
+    let paramIndex = 1;
+
+    // 处理关键词查询
     if (keywords) {
       params.push(`%${keywords}%`);
-      query += ` AND (user_name ILIKE $${params.length} OR description ILIKE $${params.length})`;
+      countParams.push(`%${keywords}%`);
+      query += ` AND (user_name ILIKE $${paramIndex} OR description ILIKE $${paramIndex})`;
+      countQuery += ` AND (user_name ILIKE $${paramIndex} OR description ILIKE $${paramIndex})`;
+      paramIndex++;
     }
+
+    // 处理时间范围查询（直接使用原始时间字符串）
     if (startTime && endTime) {
       params.push(startTime, endTime);
-      query += ` AND create_time BETWEEN $${params.length - 1} AND $${params.length}`;
-    }
-
-    // 查询用户总数
-    const countQuery = `SELECT COUNT(*) FROM users WHERE is_delete = 0` +
-      (keywords ? ` AND (user_name ILIKE $${params.length + 1} OR description ILIKE $${params.length + 1})` : '') +
-      (startTime && endTime ? ` AND create_time BETWEEN $${params.length + 2} AND $${params.length + 3}` : '');
-
-    const countParams = keywords ? [...params, `%${keywords}%`] : params;
-    if (startTime && endTime) {
       countParams.push(startTime, endTime);
+      query += ` AND create_time BETWEEN $${paramIndex}::timestamp AND $${paramIndex + 1}::timestamp`;
+      countQuery += ` AND create_time BETWEEN $${paramIndex}::timestamp AND $${paramIndex + 1}::timestamp`;
+      paramIndex += 2;
     }
 
+    // 添加分页
+    query += ` ORDER BY create_time DESC LIMIT $${paramIndex} OFFSET $${paramIndex + 1}`;
+    params.push(size, offset);
+
+    console.log('Query:', query);
+    console.log('Params:', params);
+
+    // 执行查询
     const totalResult = await sql(countQuery, countParams);
-    const total = totalResult[0].count;
+    const total = Number(totalResult[0]?.count || 0);
 
-    // 查询用户数据
-    params.push(pageSize, offset);
-    query += ` ORDER BY create_time DESC LIMIT $${params.length - 1} OFFSET $${params.length}`;
-    const result = await sql(query, params);
-
-    // 如果查询结果为空或出错，返回一个适当的响应
-    if (!result || result.length === 0) {
-      return res.status(404).json({
-        status: 404,
-        message: 'No users found',
-        page: pageNum,
-        pageSize: pageSize,
-        total: total
+    // 如果没有数据，直接返回空数组，不返回 404
+    if (total === 0) {
+      return res.json({
+        status: 200,
+        message: 'Query User Success',
+        data: [],
+        page: page,
+        pageSize: size,
+        total: 0,
       });
     }
+
+    const result = await sql(query, params);
+
+    // 格式化时间字段
+    result.forEach(user => {
+      if (user.create_time) {
+        user.create_time = moment(user.create_time).format('YYYY-MM-DD HH:mm:ss');
+      }
+      if (user.update_time) {
+        user.update_time = moment(user.update_time).format('YYYY-MM-DD HH:mm:ss');
+      }
+    });
+
     // 返回查询到的数据
     res.json({
       status: 200,
       message: 'Query User Success',
-      data: data,
-      page: pageNum,
-      pageSize: pageSize,
-      total: total
+      data: result,
+      page: page,
+      pageSize: size,
+      total: total,
     });
   } catch (err) {
-    console.error(err);  // 打印错误信息
+    console.error(err);
     res.status(500).json({
-      status: 'error',
-      message: err.message
+      status: 500,
+      message: 'Internal server error',
+      error: err.message,
     });
   }
 });
 
 // 3. 更新用户
-router.put('/', async (req, res) => {
-  const { id, user_name, password, description, roles } = req.body;
-  if (!id || !user_name || !password || !description || !roles) {
-    return res.status(400).json({ message: 'Missing required fields' });
+router.put('/:id', authMiddleware, async (req, res) => {
+  const { id } = req.params; // 从 URL 路径参数获取 id
+  const currentUserName = req.user.user_name;
+  if (currentUserName == 'admin' || 'user') {
+    return res.status(409).json({ status: 409, message: '不能修改演示账号！！！' });
+  }
+  const { user_name, password, description, roles } = req.body;
+  // 校验必填字段
+  if (!id || !user_name || !password || roles === undefined) {
+    return res.status(400).json({ status: 400, message: 'Missing required fields' });
   }
   try {
+    // 获取更新时间
     const update_time = formatDate();
+    // 加密密码
     const hashedPassword = await hashPassword(password);
+    // 默认字段数据
     const account = 'testuser';
     const is_delete = 0;
     const nick_name = '管理员';
     const role_ids = [101, 102, 301];
     const avatar = 'https://img1.baidu.com/it/u=1248484120,3563242407&fm=253&fmt=auto&app=138&f=JPEG?w=800&h=800';
+    // 构建更新 SQL 语句
     const query = `
-      UPDATE users SET user_name = $1, password = $2, description = $3, roles = $4,
-      update_time = $5, account = $6, is_delete = $7, nick_name = $8,
-      role_ids = $9, avatar = $10 WHERE id = $11 RETURNING *;
+      UPDATE users SET 
+        user_name = COALESCE($1, user_name), 
+        password = COALESCE($2, password), 
+        description = COALESCE($3, description), 
+        roles = COALESCE($4, roles),
+        update_time = $5, 
+        account = $6, 
+        is_delete = $7, 
+        nick_name = $8,
+        role_ids = $9, 
+        avatar = $10 
+      WHERE id = $11 
+      RETURNING id, user_name, description, roles, update_time;
     `;
+    // 构建查询参数
     const values = [
-      user_name, hashedPassword, description, JSON.stringify(roles),
-      update_time, account, is_delete, nick_name,
-      JSON.stringify(role_ids), avatar, id
+      user_name || null,
+      hashedPassword || null,
+      description || null,
+      roles ? JSON.stringify(roles) : null,
+      update_time,
+      account,
+      is_delete,
+      nick_name,
+      JSON.stringify(role_ids),
+      avatar,
+      id
     ];
+    // 执行 SQL 更新操作
     const result = await sql(query, values);
-    res.json(result.rows[0]);
+    // 检查更新结果
+    if (result.rowCount === 0) {
+      return res.status(404).json({ status: 404, message: 'User not found' });
+    }
+    // 如果 `rows` 为空数组，构造返回数据
+    const updatedUser = result.rows?.[0] || {
+      id,
+      user_name,
+      description,
+      roles,
+      update_time,
+    };
+    // 返回更新后的用户数据
+    res.status(200).json({
+      status: 200,
+      message: '用户更新成功',
+      data: updatedUser
+    });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    console.error(err);
+    res.status(500).json({
+      status: 500,
+      message: '服务器内部错误',
+      error: err.message
+    });
   }
 });
 
 // 4. 删除用户（软删除）
-router.delete('/', async (req, res) => {
-  const { id } = req.body;
-  if (!id) return res.status(400).json({ message: 'Missing user ID' });
+router.delete('/:id', authMiddleware, async (req, res) => {
+  const { id } = req.params;
+  const currentUserId = req.user.id;
+  const currentUserName = req.user.user_name;
+  if (id == currentUserId) {
+    return res.status(409).json({ status: 409, message: '不能删除当前登录的账号！' });
+  }
+  if (currentUserName == 'admin' || 'user') {
+    return res.status(409).json({ status: 409, message: '不能删除演示账号！！！' });
+  }
   try {
+    // 执行软删除操作
     const query = `UPDATE users SET is_delete = 1 WHERE id = $1`;
-    await sql(query, [id]);
-    res.json({ message: 'User soft-deleted successfully' });
+    const result = await sql(query, [id]);
+    // 判断是否有更新操作
+    if (result.rowCount === 0) {
+      return res.status(404).json({
+        status: 404,
+        message: '用户不存在或已被删除'
+      });
+    }
+    // 删除成功返回
+    res.status(200).json({
+      status: 200,
+      message: '用户删除成功'
+    });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    // 处理服务器错误
+    console.error(err);
+    res.status(500).json({
+      status: 500,
+      message: '服务器内部错误',
+      error: err.message
+    });
   }
 });
 

@@ -32,7 +32,12 @@ router.post('/', async (req, res) => {
     const update_time = create_time
     const is_delete = 0;  // 默认设置为未删除
     const nick_name = "管理员"; // 默认为用户名作为昵称
-    const avatar = 'https://img1.baidu.com/it/u=1248484120,3563242407&fm=253&fmt=auto&app=138&f=JPEG?w=800&h=800'; // 可设置默认头像，或允许客户端传递
+    let avatar = '';
+    if (roles[0] == 'admin') {
+      avatar = 'https://img1.baidu.com/it/u=1248484120,3563242407&fm=253&fmt=auto&app=138&f=JPEG?w=800&h=800';
+    } else {
+      avatar = 'https://img0.baidu.com/it/u=826468538,1526483732&fm=253&fmt=auto&app=120&f=JPEG?w=500&h=500';
+    }
     // 角色可以是字符串，根据业务调整角色的存储格式
     const role_ids = [101, 102, 301];  // 默认转换为数组，可能需要做进一步转换
     // 插入新用户数据
