@@ -52,7 +52,8 @@ const verifyToken = (token) => {
  * 格式化日期
  * @returns {string} - 返回格式化后的日期字符串 'YYYY-MM-DD HH:mm:ss'
  */
-const formatDate = () => moment().format("YYYY-MM-DD HH:mm:ss");
+// const formatDate = () => moment().format("YYYY-MM-DD HH:mm:ss");
+const formatDate = () => moment().add(8, 'hours').format("YYYY-MM-DD HH:mm:ss");
 
 module.exports = {
   hashPassword,
