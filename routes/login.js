@@ -17,7 +17,7 @@ router.post('/', async (req, res) => {
         // 查询用户信息
         const result = await sql('SELECT * FROM users WHERE user_name = $1 AND is_delete = 0', [user_name]);
         if (result.length === 0) {
-            return res.status(404).json({ status: 404, message: "用户不存在" });
+            return res.status(409).json({ status: 409, message: "用户不存在" });
         }
         const user = result[0];
         const hashFromDb = user.password;

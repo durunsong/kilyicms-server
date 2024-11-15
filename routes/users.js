@@ -11,10 +11,19 @@ router.post('/', authMiddleware, async (req, res) => {
   const { user_name, password, description, roles } = req.body;
   // 检查必填字段
   if (!user_name || !password || !description || !roles) {
-    return res.status(400).json({ message: 'Missing required fields' });
+    return res.status(400).json({ status: 400, message: 'Missing required fields' });
   }
   try {
+    // 1. 检查 user_name 是否重复
+    const checkUserQuery = `SELECT id FROM users WHERE user_name = $1 LIMIT 1`;
+    // AND is_delete = 0
+    const existingUser = await sql(checkUserQuery, [user_name]);
+    if (existingUser.length > 0) {
+      return res.status(409).json({ status: 409, message: '用户名已存在，请使用其他用户名' });
+    }
+    // 2. 处理密码加密
     const hashedPassword = await hashPassword(password);
+    // 3. 生成 UUID 和其他字段
     const uuid = uuidv4();
     const create_time = formatDate();
     const update_time = formatDate();
@@ -22,33 +31,34 @@ router.post('/', authMiddleware, async (req, res) => {
     const is_delete = 0;
     const nick_name = '管理员';
     const role_ids = [101, 102, 301];
+    // 根据角色设置头像
     let avatar = '';
-    if (roles[0] == 'admin') {
+    if (roles[0] === 'admin') {
       avatar = 'https://img1.baidu.com/it/u=1248484120,3563242407&fm=253&fmt=auto&app=138&f=JPEG?w=800&h=800';
     } else {
       avatar = 'https://img0.baidu.com/it/u=826468538,1526483732&fm=253&fmt=auto&app=120&f=JPEG?w=500&h=500';
     }
-    // 插入用户数据
-    const query = `
+    // 4. 插入用户数据
+    const insertUserQuery = `
       INSERT INTO users (uuid, user_name, password, description, roles, account, create_time, update_time, is_delete, nick_name, role_ids, avatar)
       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
       RETURNING *;
     `;
-    const values = [
+    const insertValues = [
       uuid, user_name, hashedPassword, description, JSON.stringify(roles),
       account, create_time, update_time, is_delete, nick_name,
       JSON.stringify(role_ids), avatar
     ];
-    const result = await sql(query, values);
-    // 检查结果并返回
+    const result = await sql(insertUserQuery, insertValues);
+    // 5. 检查结果并返回
     if (!result || result.length === 0) {
-      return res.status(500).json({ message: 'Database insertion failed, no data returned.' });
+      return res.status(500).json({ status: 500, message: 'Database insertion failed, no data returned.' });
     }
-    // 直接返回插入的数据
-    res.json({ status: 200, message: "创建成功", data: result[0] }); // 直接返回第一个用户数据对象
+    // 返回成功插入的用户数据
+    res.json({ status: 200, message: "创建成功", data: result[0] });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: "创建失败", error: err.message });
+    res.status(500).json({ status: 500, message: "创建失败", error: err.message });
   }
 });
 
@@ -169,7 +179,7 @@ router.put('/:id', authMiddleware, async (req, res) => {
     const userResult = await sql(userQuery, [id]);
     // 校验查询结果
     if (!userResult || userResult.length === 0) {
-      return res.status(404).json({ status: 404, message: 'User not found' });
+      return res.status(409).json({ status: 409, message: 'User not found' });
     }
     // 获取当前用户的信息 --- 未更改前的
     const currentUser = userResult[0];
@@ -231,7 +241,7 @@ router.put('/:id', authMiddleware, async (req, res) => {
     const result = await sql(query, values);
     // 检查更新结果
     if (result.rowCount === 0) {
-      return res.status(404).json({ status: 404, message: 'User not found' });
+      return res.status(409).json({ status: 409, message: 'User not found' });
     }
     // 获取更新后的用户信息
     const updatedUser = result.rows?.[0] || {
@@ -282,8 +292,8 @@ router.delete('/:id', authMiddleware, async (req, res) => {
     const result = await sql(query, [id]);
     // 判断是否有更新操作
     if (result.rowCount === 0) {
-      return res.status(404).json({
-        status: 404,
+      return res.status(409).json({
+        status: 409,
         message: '用户不存在或已被删除'
       });
     }

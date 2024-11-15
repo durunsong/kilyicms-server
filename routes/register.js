@@ -18,8 +18,9 @@ router.post('/', async (req, res) => {
   try {
     // 检查用户名是否已存在（使用参数化查询避免 SQL 注入）
     const checkUserQuery = `
-      SELECT * FROM users WHERE user_name = $1 AND is_delete = 0;
+      SELECT * FROM users WHERE user_name = $1 ;
     `;
+    // AND is_delete = 0
     const existingUser = await sql(checkUserQuery, [user_name]);
     if (existingUser.length > 0) {
       return res.status(409).json({ status: 409, message: '用户名已存在,请换一个用户名再试' });

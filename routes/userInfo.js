@@ -30,8 +30,8 @@ router.get("/", async (req, res) => {
         const result = await sql(query, [user_name]);
         // 判断返回的数据结构是否正确
         if (!result || result.length === 0) {
-            return res.status(404).json({
-                status: 404,
+            return res.status(409).json({
+                status: 409,
                 message: "用户不存在或已被删除"
             });
         }
