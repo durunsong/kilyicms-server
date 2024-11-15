@@ -144,8 +144,9 @@ router.get('/', async (req, res) => {
 // 3. 更新用户
 router.put('/:id', authMiddleware, async (req, res) => {
   const { id } = req.params; // 从 URL 路径参数获取 id
-  const currentUserName = req.user.user_name;
-  if (currentUserName == 'admin' || 'user') {
+  const currentUserId = req.user.id;
+  // 不允许修改演示账号
+  if (id == 1 || id == 2) {
     return res.status(409).json({ status: 409, message: '不能修改演示账号！！！' });
   }
   const { user_name, password, description, roles } = req.body;
@@ -156,8 +157,40 @@ router.put('/:id', authMiddleware, async (req, res) => {
   try {
     // 获取更新时间
     const update_time = formatDate();
-    // 加密密码
-    const hashedPassword = await hashPassword(password);
+    // 检查 password 是否已加密（bcrypt 加密后的字符串通常以 $2b$ 开头）
+    let hashedPassword;
+    if (password.startsWith('$2b$')) {
+      hashedPassword = password; // 如果是加密后的密码，直接使用
+    } else {
+      hashedPassword = await hashPassword(password); // 如果是明文密码，则加密
+    }
+    // 查询当前用户信息
+    const userQuery = `SELECT user_name, password, roles FROM users WHERE id = $1`;
+    const userResult = await sql(userQuery, [id]);
+    // 校验查询结果
+    if (!userResult || userResult.length === 0) {
+      return res.status(404).json({ status: 404, message: 'User not found' });
+    }
+    // 获取当前用户的信息 --- 未更改前的
+    const currentUser = userResult[0];
+    // 解析 roles（处理 roles 为普通字符串或 JSON 字符串的情况）
+    let currentUserRoles;
+    try {
+      currentUserRoles = JSON.parse(currentUser.roles);
+    } catch (error) {
+      currentUserRoles = currentUser.roles;
+    }
+    // 解析前端传入的 roles
+    let parsedRoles;
+    try {
+      parsedRoles = JSON.parse(roles);
+    } catch (error) {
+      parsedRoles = roles;
+    }
+    // 判断是否修改了用户名、密码或角色
+    const isUserNameChanged = currentUser.user_name !== user_name;
+    const isPasswordChanged = currentUser.password !== hashedPassword;
+    const isRolesChanged = JSON.stringify(currentUserRoles[0]) !== JSON.stringify(parsedRoles[0]);
     // 默认字段数据
     const account = 'testuser';
     const is_delete = 0;
@@ -185,7 +218,7 @@ router.put('/:id', authMiddleware, async (req, res) => {
       user_name || null,
       hashedPassword || null,
       description || null,
-      roles ? JSON.stringify(roles) : null,
+      roles ? JSON.stringify(parsedRoles) : null,
       update_time,
       account,
       is_delete,
@@ -200,14 +233,23 @@ router.put('/:id', authMiddleware, async (req, res) => {
     if (result.rowCount === 0) {
       return res.status(404).json({ status: 404, message: 'User not found' });
     }
-    // 如果 `rows` 为空数组，构造返回数据
+    // 获取更新后的用户信息
     const updatedUser = result.rows?.[0] || {
       id,
       user_name,
       description,
-      roles,
+      roles: parsedRoles,
       update_time,
     };
+    // 判断是否需要重新登录
+    if (id == currentUserId && (isUserNameChanged || isPasswordChanged || isRolesChanged)) {
+      return res.status(200).json({
+        status: 200,
+        message: '更新当前用户成功，请重新登录！',
+        data: updatedUser,
+        requiresRelogin: true, // 前端可以根据这个字段判断是否需要重新登录
+      });
+    }
     // 返回更新后的用户数据
     res.status(200).json({
       status: 200,
@@ -228,12 +270,10 @@ router.put('/:id', authMiddleware, async (req, res) => {
 router.delete('/:id', authMiddleware, async (req, res) => {
   const { id } = req.params;
   const currentUserId = req.user.id;
-  const currentUserName = req.user.user_name;
-  console.log("99999++++++++++", currentUserName);
   if (id == currentUserId) {
     return res.status(409).json({ status: 409, message: '不能删除当前登录的账号！！！' });
   }
-  if (currentUserName === 'admin' || currentUserName === 'user') {
+  if (id == 1 || id == 2) {
     return res.status(409).json({ status: 409, message: '不能删除演示账号！！！' });
   }
   try {
