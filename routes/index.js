@@ -9,8 +9,8 @@ const restoreUserRouter = require('./restore-users');
 
 module.exports = (app) => {
     app.use('/', homeRouter);
+    app.use('/db-version', dbVersionRouter);
     app.use('/api/users', usersRouter);
-    app.use('/users/db-version', dbVersionRouter);
     app.use('/api/users/login', loginRouter);
     app.use('/api/users/register', registerRouter);
     app.use('/api/users/userInfo', userInfoRouter);

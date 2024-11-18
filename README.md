@@ -77,7 +77,7 @@ npm run start
 # 遵从RESTful 风格
 /    ---get
 /api/users  ---get post put delete
-/users/db-version ---get
+/db-version ---get
 api/users/login  ---post
 /api/users/register ---post
 /api/users/userInfo  ---get
