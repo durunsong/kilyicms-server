@@ -11,7 +11,7 @@ router.get('/', async (req, res) => {
         res.json({ version });
     } catch (error) {
         console.error('数据库错误:', error);
-        res.status(500).json({ error: '数据库连接错误' });
+        res.status(500).json({ status: 500, error: '数据库连接错误' });
     }
 });
 

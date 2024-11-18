@@ -10,14 +10,14 @@ router.get("/", async (req, res) => {
     if (!token) {
         return res.status(401).json({
             status: 401,
-            message: "Token 不存在"
+            message: "登录过期，请重新登录！"
         });
     }
     try {
         const decoded = jwt.verify(token, secretKey);
         const user_name = decoded.user_name;
         if (!user_name) {
-            return res.status(403).json({ status: 'error', message: 'Token 无效或用户信息缺失' });
+            return res.status(403).json({ status: 401, message: '登录过期，请重新登录！' });
         }
         // 查询数据库获取用户信息
         const query = `
@@ -57,8 +57,8 @@ router.get("/", async (req, res) => {
         });
     } catch (err) {
         console.error(err);
-        return res.status(403).json({
-            status: 403,
+        return res.status(401).json({
+            status: 401,
             message: "登录过期，请重新登录"
         });
     }
