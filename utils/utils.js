@@ -28,12 +28,23 @@ const comparePassword = async (password, hashedPassword) => {
 
 /**
  * 生成 JWT Token
- * @param {Object} user - 用户信息对象（包含 id 和 account 等）
+ * @param {Object} user - 用户信息对象（包含 id 和 user_name 等）
  * @returns {string} - 返回生成的 token
  */
 const generateToken = (user) => {
-  return jwt.sign({ id: user.id, account: user.account }, JWT_SECRET, { expiresIn: '1h' });
+  const currentTime = Math.floor(Date.now() / 1000); // 当前时间的 Unix 时间戳（秒）
+  const expirationTime = currentTime + 2 * 60; // 2分钟后过期（2 * 60秒）
+  return jwt.sign(
+    { 
+      id: user.id, 
+      user_name: user.user_name, 
+      iat: currentTime, // 颁发时间
+      exp: expirationTime // 过期时间
+    },
+    JWT_SECRET
+  );
 };
+
 
 /**
  * 验证 JWT Token

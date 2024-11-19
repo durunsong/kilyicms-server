@@ -1,10 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
 const moment = require('moment');
 const { sql } = require('../db/db-connection'); // 引入Neon数据库连接模块
-const secretKey = process.env.JWT_SECRET; // 从环境变量中获取密钥
+const { generateToken } = require('../utils/utils');
 
 // 登录接口
 router.post('/', async (req, res) => {
@@ -27,15 +26,17 @@ router.post('/', async (req, res) => {
             return res.status(409).json({ status: 409, message: "用户名或密码错误" });
         }
         // 生成 JWT Token
-        const token = jwt.sign(
-            { id: user.id, user_name: user.user_name },
-            secretKey, // 替换为您的 JWT 秘钥
-            { expiresIn: "1h" }
-        );
+        const token = generateToken({ id: user.id, user_name: user.user_name })
         // 获取登录时间
         const login_time = moment().format("YYYY-MM-DD HH:mm:ss");
+        // setCookie
+        res.cookie("kilyicms_token", token, {
+            maxAge: 2 * 60 * 1000,
+            httpOnly: true,
+            secure: true, // 如果是 https 环境下
+        });
         // 返回响应
-        res.status(200).json({ message: "登录成功", status: 200, token, login_time });
+        res.status(200).json({ message: "登录成功", status: 200, login_time });
     } catch (error) {
         console.error('数据库错误:', error);
         res.status(500).json({ status: 500, message: "查询用户失败" });

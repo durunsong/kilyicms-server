@@ -1,24 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const jwt = require('jsonwebtoken');
 const { sql } = require('../db/db-connection'); // 假设你已设置 Neon 数据库连接
-const secretKey = process.env.JWT_SECRET; // 从环境变量中获取密钥
+const authMiddleware = require('../middleware/authMiddleware'); // 引入中间件
 
 // 获取用户详情接口
-router.get("/", async (req, res) => {
-    const token = req.headers.authorization?.split(" ")[1]; // 从请求头获取 token
-    if (!token) {
-        return res.status(401).json({
-            status: 401,
-            message: "登录过期，请重新登录！"
-        });
-    }
+router.get("/", authMiddleware, async (req, res) => {
+    const { user_name } = req.user; // 从 req.user 中获取用户信息
     try {
-        const decoded = jwt.verify(token, secretKey);
-        const user_name = decoded.user_name;
-        if (!user_name) {
-            return res.status(403).json({ status: 401, message: '登录过期，请重新登录！' });
-        }
         // 查询数据库获取用户信息
         const query = `
             SELECT 
@@ -57,12 +45,11 @@ router.get("/", async (req, res) => {
         });
     } catch (err) {
         console.error(err);
-        return res.status(401).json({
-            status: 401,
-            message: "登录过期，请重新登录"
+        return res.status(500).json({
+            status: 500,
+            message: "服务器错误，无法获取用户信息"
         });
     }
 });
-
 
 module.exports = router;

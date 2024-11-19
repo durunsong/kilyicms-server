@@ -2,11 +2,12 @@
 const { verifyToken } = require('../utils/utils');  // 假设你有一个 JWT 工具来验证 Token
 
 const authMiddleware = (req, res, next) => {
-    const token = req.headers.authorization?.split(" ")[1]; // 从请求头获取 Token，格式为 "Bearer token"
-
-    // 校验 Token 是否存在
+    const token = req.cookies.kilyicms_token; // 从cookie中获取 token
     if (!token) {
-        return res.status(401).json({ status: 401, message: '登录过期，请重新登录!' });
+        return res.status(401).json({
+            status: 401,
+            message: "登录过期，请重新登录！"
+        });
     }
 
     try {
