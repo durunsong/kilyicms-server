@@ -3,6 +3,7 @@ const cors = require("cors");
 const whitelist = [
     "http://localhost:7000",  // 本地开发环境
     "https://kilyicms.vercel.app",  // 生产环境
+    "https://kilyicms-db.vercel.app" // 生产环境
 ];
 
 const corsOptions = {
