@@ -33,6 +33,7 @@ router.post('/', async (req, res) => {
         res.cookie("kilyicms_token", token, {
             maxAge: 2 * 60 * 1000,
             httpOnly: true,
+            sameSite: "None" // 如果是 https 环境下
         });
         // 返回响应
         res.status(200).json({ message: "登录成功", status: 200, login_time });
