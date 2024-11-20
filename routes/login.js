@@ -34,6 +34,7 @@ router.post('/', async (req, res) => {
             maxAge: 2 * 60 * 1000,
             httpOnly: true,
             secure: true,
+            sameSite: "None"
         });
         // 返回响应
         res.status(200).json({ message: "登录成功", status: 200, login_time });
