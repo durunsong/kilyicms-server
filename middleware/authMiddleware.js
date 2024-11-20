@@ -2,7 +2,8 @@
 const { verifyToken } = require('../utils/utils');  // 假设你有一个 JWT 工具来验证 Token
 
 const authMiddleware = (req, res, next) => {
-    const token = req.cookies.kilyicms_token; // 从cookie中获取 token
+    // const token = req.cookies.kilyicms_token; // 从cookie中获取token ---- set cookie的token
+    const token = req.headers.authorization?.split(" ")[1]; // 从请求头获取 Token，格式为 "Bearer token"
     if (!token) {
         return res.status(401).json({
             status: 401,

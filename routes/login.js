@@ -30,14 +30,14 @@ router.post('/', async (req, res) => {
         // 获取登录时间
         const login_time = moment().format("YYYY-MM-DD HH:mm:ss");
         // setCookie
-        res.cookie("kilyicms_token", token, {
-            maxAge: 2 * 60 * 1000,
-            httpOnly: true,
-            secure: true,
-            sameSite: "None"
-        });
+        // res.cookie("kilyicms_token", token, {
+        //     maxAge: 2 * 60 * 1000,
+        //     httpOnly: true,
+        //     secure: true,
+        //     sameSite: "None"
+        // });
         // 返回响应
-        res.status(200).json({ message: "登录成功", status: 200, login_time });
+        res.status(200).json({ message: "登录成功", status: 200, login_time, token });
     } catch (error) {
         console.error('数据库错误:', error);
         res.status(500).json({ status: 500, message: "查询用户失败" });
