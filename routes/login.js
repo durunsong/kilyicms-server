@@ -26,15 +26,16 @@ router.post('/', async (req, res) => {
             return res.status(409).json({ status: 409, message: "用户名或密码错误" });
         }
         // 生成 JWT Token
-        const token = generateToken({  id: user.id, user_name: user.user_name })
+        const token = generateToken({ id: user.id, user_name: user.user_name })
         // 获取登录时间
         const login_time = moment().format("YYYY-MM-DD HH:mm:ss");
         // setCookie
-        res.cookie("kilyicms_token_sss", token, {
-            maxAge: 2 * 60,
-            httpOnly: false,
-            sameSite: true,
-        });
+        // res.cookie("kilyicms_token", token, {
+        //     maxAge: 2 * 60 * 1000,
+        //     httpOnly: true,
+        //     secure: true,
+        //     sameSite: "None"
+        // });
         // 返回响应
         res.status(200).json({ message: "登录成功", status: 200, login_time, token });
     } catch (error) {
