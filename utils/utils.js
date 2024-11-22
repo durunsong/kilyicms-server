@@ -33,7 +33,8 @@ const comparePassword = async (password, hashedPassword) => {
  */
 const generateToken = (user) => {
   const currentTime = Math.floor(Date.now() / 1000); // 当前时间的 Unix 时间戳（秒）
-  const expirationTime = currentTime + 2 * 60 * 60; // 2小时后过期（2 * 60 * 60秒）
+  // const expirationTime = currentTime + 2 * 60 * 60; // 2小时后过期（2 * 60 * 60秒）
+  const expirationTime = currentTime + 2 * 60; // 2小时后过期（2 * 60 * 60秒）
   return jwt.sign(
     {
       id: user.id,
