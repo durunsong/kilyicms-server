@@ -7,6 +7,8 @@ const userInfoRouter = require('./userInfo');
 const deleteListUserRouter = require('./deleted-users');
 const restoreUserRouter = require('./restore-users');
 const logoutRouter = require('./logout');
+const proxycheckRouter = require('./proxycheck');
+const ipifyRouter = require('./ipify');
 
 module.exports = (app) => {
     app.use('/', homeRouter);
@@ -18,4 +20,6 @@ module.exports = (app) => {
     app.use('/api/users/deleteList', deleteListUserRouter);
     app.use('/api/users/restore', restoreUserRouter);
     app.use('/api/users/logout', logoutRouter);
+    app.use('/proxycheck', proxycheckRouter);
+    app.use('/ipify', ipifyRouter);
 };
