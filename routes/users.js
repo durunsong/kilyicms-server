@@ -120,16 +120,20 @@ router.get('/', async (req, res) => {
       });
     }
 
-    const result = await sql(query, params);
+    let result = await sql(query, params);
 
-    // 格式化时间字段
-    result.forEach(user => {
+    // 格式化时间字段并移除 token 字段
+    result = result.map(user => {
       if (user.create_time) {
         user.create_time = moment(user.create_time).format('YYYY-MM-DD HH:mm:ss');
       }
       if (user.update_time) {
         user.update_time = moment(user.update_time).format('YYYY-MM-DD HH:mm:ss');
       }
+      // 删除 token 字段
+      delete user.token;
+
+      return user;
     });
 
     // 返回查询到的数据
