@@ -1,7 +1,7 @@
 <div align="center">
   <img alt="Kilyicms Logo" width="120" height="120" src="https://kilyicms-server.vercel.app/images/logo.png">
   <h1>Kilyicms</h1>
-  <span><a href="./README.md">English</a> | 中文</span>
+  <span><a href="./README.EN.md">English</a> | 中文</span>
 </div>
 
 # kilyicms-server
