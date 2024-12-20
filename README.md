@@ -1,4 +1,10 @@
-# kilyicms-db
+<div align="center">
+  <img alt="Kilyicms Logo" width="120" height="120" src="https://kilyicms-server.vercel.app/images/logo.png">
+  <h1>Kilyicms</h1>
+  <span><a href="./README.md">English</a> | 中文</span>
+</div>
+
+# kilyicms-server
 
 这是使用 **Node.js**、**Express**、**Neon** 云数据库、**CORS**、**JWT** 和 **Bcrypt** 开发的 KilyiCMS 后端项目。项目通过 **Vercel** 进行无服务器部署，旨在提供一个简洁、易于扩展的后端 API。
 
@@ -51,6 +57,11 @@ PORT=3000
 DATABASE_URL=postgres://username:password@neon.example.com/dbname
 APP_SECRET=your_jwt_secret_key
 ```
+
+## 数据库文档和控制台
+
+https://console.neon.tech/
+
 
 ### 🚀 安装和启动
 
