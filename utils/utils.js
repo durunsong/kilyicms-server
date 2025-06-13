@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 const moment = require('moment');
 
 const SALT_ROUNDS = 10; // 加密的盐值
-const JWT_SECRET = process.env.JWT_SECRET || '64305b2c17dc4d94f3e54cbd12b05696'; // JWT 密钥，可以从环境变量获取
+const JWT_SECRET = process.env.JWT_SECRET ; // JWT 密钥，可以从环境变量获取 .env文件中JWT_SECRET字段
 
 /**
  * 对密码进行加密
