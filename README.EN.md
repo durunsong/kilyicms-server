@@ -50,12 +50,19 @@ kilyicms-db/
 
 ## 🔧 Environment Variables Configuration
 
+Manually create `.env` files to configure environment variables
 The project uses a `.env` file to configure environment variables. Here is an example:
 
 ```mariadb
-PORT=3000
+# Port number 
+PORT='3000'
+
+# Database configuration 
 DATABASE_URL=postgres://username:password@neon.example.com/dbname
-APP_SECRET=your_jwt_secret_key
+
+# JWT_SECRET --- key used to generate and validate JWT 
+JWT_SECRET = 'xxxxxxxxxxxx-xxx-xxx-xxxx'
+
 ```
 
 ## Database Documentation and Console

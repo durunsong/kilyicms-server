@@ -50,12 +50,19 @@ kilyicms-db/
 
 ## 🔧 环境变量配置
 
+手动创建`.env` 文件配置环境变量
 项目使用 `.env` 文件配置环境变量。以下是示例：
 
 ```mariadb
-PORT=3000
+# 端口号
+PORT='3000'
+
+# 数据库配置
 DATABASE_URL=postgres://username:password@neon.example.com/dbname
-APP_SECRET=your_jwt_secret_key
+
+# JWT_SECRET --- 用于生成和验证JWT的密钥
+JWT_SECRET = 'xxxxxxxxxxx-xxx-xx-xxxx'
+
 ```
 
 ## 数据库文档和控制台
