@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const moment = require('moment');
 const { sql } = require('../db/db-connection'); // 引入Neon数据库连接模块
 const { generateToken } = require('../utils/utils');
