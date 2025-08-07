@@ -9,7 +9,7 @@ const app = express();
 require('../middleware/index')(app);
 // OPTIONS 预检请求处理
 app.options('*', (req, res) => {
-  res.sendStatus(204);
+  res.sendStatus(204); // 204 表示没有内容
 });
 
 // 设置静态资源目录
