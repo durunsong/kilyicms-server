@@ -18,7 +18,7 @@ router.post('/', async (req, res) => {
   try {
     // 检查用户名是否已存在（使用参数化查询避免 SQL 注入）
     const checkUserQuery = `
-      SELECT * FROM users WHERE user_name = $1 ;
+      SELECT * FROM kilyicms_users WHERE user_name = $1 ;
     `;
     // AND is_delete = 0
     const existingUser = await sql(checkUserQuery, [user_name]);
@@ -43,7 +43,7 @@ router.post('/', async (req, res) => {
     const role_ids = [101, 102, 301];  // 默认转换为数组，可能需要做进一步转换
     // 插入新用户数据
     const insertUserQuery = `
-      INSERT INTO users (uuid, user_name, password, description, roles, account, create_time, update_time, is_delete, nick_name, role_ids, avatar)
+      INSERT INTO kilyicms_users (uuid, user_name, password, description, roles, account, create_time, update_time, is_delete, nick_name, role_ids, avatar)
       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) RETURNING *;
     `;
     const values = [uuid, user_name, hashedPassword, '', JSON.stringify(roles), user_name, create_time, update_time, is_delete, nick_name, JSON.stringify(role_ids), avatar];

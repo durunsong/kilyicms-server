@@ -5,7 +5,7 @@
 新建查询以清除编辑器。
 */
 
-CREATE TABLE IF NOT EXISTS users (
+CREATE TABLE IF NOT EXISTS kilyicms_users (
     id SERIAL PRIMARY KEY,
     account VARCHAR(50) NOT NULL,
     create_time TIMESTAMP NOT NULL,

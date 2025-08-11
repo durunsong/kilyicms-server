@@ -15,7 +15,7 @@ router.post('/', authMiddleware, async (req, res) => {
   }
   try {
     // 1. 检查 user_name 是否重复
-    const checkUserQuery = `SELECT id FROM users WHERE user_name = $1 LIMIT 1`;
+    const checkUserQuery = `SELECT id FROM kilyicms_users WHERE user_name = $1 LIMIT 1`;
     // AND is_delete = 0
     const existingUser = await sql(checkUserQuery, [user_name]);
     if (existingUser.length > 0) {
@@ -40,7 +40,7 @@ router.post('/', authMiddleware, async (req, res) => {
     }
     // 4. 插入用户数据
     const insertUserQuery = `
-      INSERT INTO users (uuid, user_name, password, description, roles, account, create_time, update_time, is_delete, nick_name, role_ids, avatar)
+      INSERT INTO kilyicms_users (uuid, user_name, password, description, roles, account, create_time, update_time, is_delete, nick_name, role_ids, avatar)
       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
       RETURNING *;
     `;
@@ -73,8 +73,8 @@ router.get('/', async (req, res) => {
 
   try {
     // 基础查询
-    let query = `SELECT * FROM users WHERE is_delete = 0`;
-    let countQuery = `SELECT COUNT(*) FROM users WHERE is_delete = 0`;
+    let query = `SELECT * FROM kilyicms_users WHERE is_delete = 0`;
+    let countQuery = `SELECT COUNT(*) FROM kilyicms_users WHERE is_delete = 0`;
     const params = [];
     const countParams = [];
     let paramIndex = 1;
@@ -179,7 +179,7 @@ router.put('/:id', authMiddleware, async (req, res) => {
       hashedPassword = await hashPassword(password); // 如果是明文密码，则加密
     }
     // 查询当前用户信息
-    const userQuery = `SELECT user_name, password, roles FROM users WHERE id = $1`;
+    const userQuery = `SELECT user_name, password, roles FROM kilyicms_users WHERE id = $1`;
     const userResult = await sql(userQuery, [id]);
     // 校验查询结果
     if (!userResult || userResult.length === 0) {
@@ -213,7 +213,7 @@ router.put('/:id', authMiddleware, async (req, res) => {
     const avatar = 'https://img1.baidu.com/it/u=1248484120,3563242407&fm=253&fmt=auto&app=138&f=JPEG?w=800&h=800';
     // 构建更新 SQL 语句
     const query = `
-      UPDATE users SET 
+      UPDATE kilyicms_users SET 
         user_name = COALESCE($1, user_name), 
         password = COALESCE($2, password), 
         description = COALESCE($3, description), 
@@ -292,7 +292,7 @@ router.delete('/:id', authMiddleware, async (req, res) => {
   }
   try {
     // 执行软删除操作
-    const query = `UPDATE users SET is_delete = 1 WHERE id = $1`;
+    const query = `UPDATE kilyicms_users SET is_delete = 1 WHERE id = $1`;
     const result = await sql(query, [id]);
     // 判断是否有更新操作
     if (result.rowCount === 0) {

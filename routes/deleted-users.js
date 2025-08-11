@@ -14,8 +14,8 @@ router.get('/', async (req, res) => {
     const offset = (page - 1) * size;
     try {
         // 修改查询条件为 is_delete = 1
-        let query = `SELECT * FROM users WHERE is_delete = 1`;
-        let countQuery = `SELECT COUNT(*) FROM users WHERE is_delete = 1`;
+        let query = `SELECT * FROM kilyicms_users WHERE is_delete = 1`;
+        let countQuery = `SELECT COUNT(*) FROM kilyicms_users WHERE is_delete = 1`;
         const params = [];
         const countParams = [];
         let paramIndex = 1;
@@ -89,7 +89,7 @@ router.delete('/:id', authMiddleware, async (req, res) => {
     const { id } = req.params;
     try {
         // 执行物理删除操作
-        const query = `DELETE FROM users WHERE id = $1`;
+        const query = `DELETE FROM kilyicms_users WHERE id = $1`;
         const result = await sql(query, [id]);
         // 判断是否成功删除
         if (result.rowCount === 0) {

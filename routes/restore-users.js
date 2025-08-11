@@ -8,7 +8,7 @@ router.put('/:id', authMiddleware, async (req, res) => {
     const { id } = req.params;
     try {
         // 查询该用户是否已被软删除
-        const checkQuery = `SELECT is_delete FROM users WHERE id = $1`;
+        const checkQuery = `SELECT is_delete FROM kilyicms_users WHERE id = $1`;
         const userResult = await sql(checkQuery, [id]);
         if (userResult.length === 0) {
             return res.status(409).json({
@@ -25,7 +25,7 @@ router.put('/:id', authMiddleware, async (req, res) => {
             });
         }
         // 执行还原操作
-        const restoreQuery = `UPDATE users SET is_delete = 0 WHERE id = $1`;
+        const restoreQuery = `UPDATE kilyicms_users SET is_delete = 0 WHERE id = $1`;
         const result = await sql(restoreQuery, [id]);
         // 判断是否有更新操作
         if (result.rowCount === 0) {

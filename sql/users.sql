@@ -5,7 +5,7 @@
 新建查询以清除编辑器。
 */
 
-CREATE TABLE IF NOT EXISTS users (
+CREATE TABLE IF NOT EXISTS kilyicms_users (
     id SERIAL PRIMARY KEY,                        -- 用户ID，自增主键
     account VARCHAR(50) UNIQUE NOT NULL,          -- 账户名，唯一且非空
     password VARCHAR(255) NOT NULL,               -- 密码，非空

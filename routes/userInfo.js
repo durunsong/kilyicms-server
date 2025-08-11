@@ -12,7 +12,7 @@ router.get("/", authMiddleware, async (req, res) => {
             SELECT 
                 id, account, create_time, update_time, is_delete, password, 
                 description, user_name, nick_name, role_ids, avatar, uuid, roles
-            FROM users
+            FROM kilyicms_users
             WHERE user_name = $1 AND is_delete = 0
         `;
         const result = await sql(query, [user_name]);

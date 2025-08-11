@@ -14,7 +14,7 @@ router.post('/', async (req, res) => {
     }
     try {
         // 查询用户信息
-        const result = await sql('SELECT * FROM users WHERE user_name = $1 AND is_delete = 0', [user_name]);
+        const result = await sql('SELECT * FROM kilyicms_users WHERE user_name = $1 AND is_delete = 0', [user_name]);
         if (result.length === 0) {
             return res.status(409).json({ status: 409, message: "用户不存在" });
         }
